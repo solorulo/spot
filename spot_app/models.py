@@ -1,51 +1,66 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
-class Usuario(models.Model):
+# Create your models here. su mamada de no tocar de
+
+class Crew(models.Model):
 	nombre = models.CharField(max_length=30)
-	usuario = models.CharField(max_length=30)
-	mail = models.EmailField(max_length=30)
-	password = models.CharField(max_length=30)
-	foto_url = models.CharField(max_length=30)
-	anonimo = models.BooleanField()
-
+	foto_url = models.CharField(max_length=60)
+	
 	def __unicode__(self):
 		return self.nombre
 
-class Foto(models.Model):
-	nombre = models.CharField(max_length=30)
-	usuario = models.ForeignKey(Usuario)
-	descripcion = models.CharField(max_length=30)
-	fecha = models.DateTimeField(auto_now=True, auto_now_add=False)
-	delay = models.DateTimeField(auto_now=False)
-	urbex = models.BooleanField()
-	url = models.CharField(max_length=60)
-	xAccel = models.DecimalField(max_digits=5, decimal_places=10)
-	yAccel = models.DecimalField(max_digits=5, decimal_places=10)
-	zAccel = models.DecimalField(max_digits=5, decimal_places=10)
-	latitud = models.DecimalField(max_digits=9, decimal_places=18)
-	altitud = models.DecimalField(max_digits=9, decimal_places=18)
-	
+class Info_Usuario(models.Model):
+	user = models.OneToOneField(User)
+	foto_url = models.CharField(max_length=60)
+	anonimo = models.BooleanField()
+	crews = models.ManyToManyField(Crew)
+	seguir = models.ManyToManyField("self")
+
 	def __unicode__(self):
 		return self.nombre
 
 class Spot(models.Model):
-	nombre = models.CharField(max_length=30)
-	latitud = models.DecimalField(max_digits=9, decimal_places=18)
-	altitud = models.DecimalField(max_digits=9, decimal_places=18)
-	img_url = models.CharField(max_length=30)
+	foto_url = models.CharField(max_length=60)
+	latitud = models.DecimalField(decimal_places=7, max_digits=10)
+	altitud = models.DecimalField(decimal_places=7, max_digits=10)
+	likes = models.ManyToManyField(Info_Usuario)
 	
 	def __unicode__(self):
 		return self.nombre
 
-class Crew(models.Model):
-	nombre = models.CharField(max_length=30)
-	#fotos many to manyhgte ghj9k0lñp
-	d2w
+class Foto(models.Model):
+	foto_url = models.CharField(max_length=60)
+	user = models.ForeignKey(User)
+	spot = models.ForeignKey(Spot)
+	fecha = models.DateTimeField()
+	delay = models.DateTimeField()
+	descripcion = models.CharField(max_length=250)
+	crews = models.ManyToManyField(Crew)
+	urbex = models.BooleanField()
+	latitud = models.DecimalField(decimal_places=7, max_digits=10)
+	altitud = models.DecimalField(decimal_places=7, max_digits=10)
+	colonia = models.CharField(max_length=100)
+	xAccel = models.DecimalField(decimal_places=7, max_digits=10)
+	yAccel = models.DecimalField(decimal_places=7, max_digits=10)
+	zAccel = models.DecimalField(decimal_places=7, max_digits=10)
+	likes = models.ManyToManyField(Info_Usuario)
 	
 	def __unicode__(self):
-		return self.nombre
+		return self.foto_url
 
 class Comentario(models.Model):
-	texto = models.CharField(max_length=240)
-	#foto
+	texto = models.CharField(max_length=30)
+	user = models.ForeignKey(User)
+	foto = models.ForeignKey(Foto)
+	
+	def __unicode__(self):
+		return self.nombre
+
+class Ruta(models.Model):
+	nombre = models.CharField(max_length=30)
+	spots = models.ManyToManyField(Spot)
+	likes = models.ManyToManyField(Info_Usuario)
+
+	def __unicode__(self):
+		return self.nombre
