@@ -4,7 +4,11 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+from spot import settings
+
 urlpatterns = patterns('',
+	url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     # Examples:
     url(r'^$', 'spot_app.views.home', name='home'),
     # url(r'^spot/', include('spot.foo.urls')),
