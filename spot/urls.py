@@ -11,6 +11,8 @@ urlpatterns = patterns('',
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     # Examples:
     url(r'^$', 'spot_app.views.home', name='home'),
+    url(r'^register/$', 'spot_app.views.register', name='register'),
+    url(r'^logout/$', 'spot_app.views.logout', name='logout'),
     # url(r'^spot/', include('spot.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

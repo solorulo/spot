@@ -1,18 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
+import cloudinary
+from cloudinary.models import *
 
 # Create your models here. su mamada de no tocar de
 
 class Crew(models.Model):
 	nombre = models.CharField(max_length=30)
-	foto_url = models.CharField(max_length=60)
+	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 	
 	def __unicode__(self):
 		return self.nombre
 
 class Info_Usuario(models.Model):
 	user = models.OneToOneField(User)
-	foto_url = models.CharField(max_length=60)
+	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 	anonimo = models.BooleanField()
 	crews = models.ManyToManyField(Crew)
 	seguir = models.ManyToManyField("self")
@@ -21,16 +23,13 @@ class Info_Usuario(models.Model):
 		return self.nombre
 
 class Spot(models.Model):
-	foto_url = models.CharField(max_length=60)
+	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 	latitud = models.DecimalField(decimal_places=7, max_digits=10)
 	altitud = models.DecimalField(decimal_places=7, max_digits=10)
 	likes = models.ManyToManyField(Info_Usuario)
-	
-	def __unicode__(self):
-		return self.nombre
 
 class Foto(models.Model):
-	foto_url = models.CharField(max_length=60)
+	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 	user = models.ForeignKey(User)
 	spot = models.ForeignKey(Spot)
 	fecha = models.DateTimeField()
@@ -47,7 +46,7 @@ class Foto(models.Model):
 	likes = models.ManyToManyField(Info_Usuario)
 	
 	def __unicode__(self):
-		return self.foto_url
+		return self.descripcion
 
 class Comentario(models.Model):
 	texto = models.CharField(max_length=30)
@@ -59,8 +58,14 @@ class Comentario(models.Model):
 
 class Ruta(models.Model):
 	nombre = models.CharField(max_length=30)
-	spots = models.ManyToManyField(Spot)
+	spots = models.ManyToManyField(Spot, through='Orden')
 	likes = models.ManyToManyField(Info_Usuario)
 
 	def __unicode__(self):
 		return self.nombre
+
+class Orden(models.Model):
+	ruta = models.ForeignKey(Ruta)
+	spot = models.ForeignKey(Spot)
+	position = models.IntegerField()
+
