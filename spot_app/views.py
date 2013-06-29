@@ -8,8 +8,30 @@ from django.utils import simplejson
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from django.contrib.auth import authenticate
+from django.views.defaults import page_not_found
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+
+def handler404(request):
+	_json = {}
+	_json['status'] = {
+		'code' : 404,
+		'msg' : "Not Found"
+	}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
+def handler500(request):
+	_json = {}
+	_json['status'] = {
+		'code' : 500,
+		'msg' : "Internal Error"
+	}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
+
+def url(self, **options):
+    options.update(format = self.format, version = self.version)
+    return utils.cloudinary_url(self.public_id, **options)[0]
 
 def home(request):
 	# user = User.objects.create_user( "rulo1", "email", "rulo" ) # Guardamos el usuario
@@ -48,6 +70,10 @@ def register(request):
 				return HttpResponse(data)
 			except User.DoesNotExist:
 				# TODO registrar
+				user = User.objects.create_user(username=username, email=email, password=password)
+				user.save()
+				info_user = Info_Usuario(user=user, foto_url=foto_url, anonimo=False )
+				info_user.save()
 				_json['status'] = {
 					'code' : 201,
 					'msg' : "Registro Creado"
@@ -55,7 +81,6 @@ def register(request):
 				data = simplejson.dumps(_json)
 				return HttpResponse(data)
 		else:
-			User.objects.get( username=username )
 			_json['status'] = {
 				'code' : 401,
 				'msg' : "Error"
@@ -68,7 +93,7 @@ def register(request):
 	else:
 		_json['status'] = {
 			'code' : 403,
-			'msg' : "Forbidden"
+			'msg' : "Solo POST"
 		}
 		data = simplejson.dumps(_json)
 		return HttpResponse(data)

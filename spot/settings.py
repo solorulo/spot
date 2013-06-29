@@ -1,7 +1,7 @@
 # Django settings for spot project.
 import os
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
