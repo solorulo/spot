@@ -8,7 +8,7 @@ from django.contrib.auth.models import User, Group
 class UserProfileInline(admin.StackedInline):
     model = Info_Usuario
     can_delete = False
-    verbose_name_plural = 'profile'
+    verbose_name_plural = 'Perfil'
 
 # Define a new User admin
 class UserAdmin(UserAdmin):
@@ -20,6 +20,7 @@ admin.site.unregister(Group)
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Crew)
+admin.site.register(Comparte)
 admin.site.register(Foto)
 admin.site.register(Comentario)
 admin.site.register(Ruta)

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 import os
+from spot_app.models import *
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.utils import simplejson
@@ -11,6 +12,9 @@ from django.contrib.auth import authenticate
 from django.views.defaults import page_not_found
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+
+import cloudinary
+from cloudinary import uploader, utils, CloudinaryImage
 
 def handler404(request):
 	_json = {}
@@ -38,6 +42,18 @@ def home(request):
 	# user.is_staff = True
 	# user.is_superuser = True
 	# user.save()
+	# user = User.objects.get(username='solorulo')
+	# usp = Info_Usuario.objects.get(user=user)
+	# foto = url(usp.foto_url)
+	# _json = {}
+	# _json['status'] = {
+	# 	'code' : 500,
+	# 	'msg' : foto
+	# }
+	# usp.foto_url = "ewvm2y4pgvqdmc3do77v.jpg"
+	# usp.save()
+	# data = simplejson.dumps(_json)
+	# return HttpResponse(data)
 	return render_to_response('home/home.html')
 
 def register(request):

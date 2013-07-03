@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-
+from django.conf.urls.defaults import *
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'spot_app.views.home', name='home'),
     url(r'^register/$', 'spot_app.views.register', name='register'),
+    # url(r'^login/$', 'spot_app.views.login', name='login'),
     url(r'^logout/$', 'spot_app.views.logout', name='logout'),
     # url(r'^spot/', include('spot.foo.urls')),
 

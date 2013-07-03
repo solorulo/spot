@@ -16,26 +16,31 @@ class Info_Usuario(models.Model):
 	user = models.OneToOneField(User)
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 	anonimo = models.BooleanField()
-	crews = models.ManyToManyField(Crew)
-	seguir = models.ManyToManyField("self")
+	crews = models.ManyToManyField(Crew,null=True,blank=True)
+	seguir = models.ManyToManyField("self",null=True,blank=True)
 
 	def __unicode__(self):
-		return self.nombre
+		return self.user.username
 
 class Spot(models.Model):
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 	latitud = models.DecimalField(decimal_places=7, max_digits=10)
 	altitud = models.DecimalField(decimal_places=7, max_digits=10)
-	likes = models.ManyToManyField(Info_Usuario)
+	likes = models.ManyToManyField(Info_Usuario,null=True,blank=True)
+
+class Etiqueta(models.Model):
+	nombre = models.CharField(max_length=150)
+	def __unicode__(self):
+		return self.nombre
 
 class Foto(models.Model):
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 	user = models.ForeignKey(User)
 	spot = models.ForeignKey(Spot)
 	fecha = models.DateTimeField()
-	delay = models.DateTimeField()
+	delay = models.DateTimeField(blank=True, null=True)
 	descripcion = models.CharField(max_length=250)
-	crews = models.ManyToManyField(Crew)
+	crews = models.ManyToManyField(Crew,null=True,blank=True)
 	urbex = models.BooleanField()
 	latitud = models.DecimalField(decimal_places=7, max_digits=10)
 	altitud = models.DecimalField(decimal_places=7, max_digits=10)
@@ -43,10 +48,15 @@ class Foto(models.Model):
 	xAccel = models.DecimalField(decimal_places=7, max_digits=10)
 	yAccel = models.DecimalField(decimal_places=7, max_digits=10)
 	zAccel = models.DecimalField(decimal_places=7, max_digits=10)
-	likes = models.ManyToManyField(Info_Usuario)
+	likes = models.ManyToManyField(Info_Usuario,null=True,blank=True)
+	tags = models.ManyToManyField(Etiqueta,null=True,blank=True)
 	
 	def __unicode__(self):
 		return self.descripcion
+
+class Comparte (models.Model):
+	user = models.ForeignKey(User)
+	foto = models.ForeignKey(Foto)
 
 class Comentario(models.Model):
 	texto = models.CharField(max_length=30)
