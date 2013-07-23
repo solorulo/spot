@@ -131,7 +131,7 @@ def register(request):
 		return HttpResponse(data)
 def login(request):
 	_json = {}
-	if (request.method == "POST" and request.META.has_key('SpotStreet-X-Key')):
+	if (request.method == "POST"):
 		errors = []
 		username = request.POST['username']
 		password = request.POST['password']
