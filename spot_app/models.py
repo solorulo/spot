@@ -4,10 +4,13 @@ import cloudinary
 from cloudinary.models import *
 
 # Create your models here. su mamada de no tocar de
+class Info_Usuario(models.Model):
+	pass
 
 class Crew(models.Model):
 	nombre = models.CharField(max_length=30)
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
+	members = models.ManyToManyField(Info_Usuario,null=True,blank=True)
 	
 	def __unicode__(self):
 		return self.nombre
@@ -15,7 +18,7 @@ class Crew(models.Model):
 class Info_Usuario(models.Model):
 	user = models.OneToOneField(User)
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
-	anonimo = models.BooleanField()
+	anonimo = models.BooleanField(default=False)
 	crews = models.ManyToManyField(Crew,null=True,blank=True)
 	seguir = models.ManyToManyField("self",null=True,blank=True)
 
@@ -29,14 +32,15 @@ class Spot(models.Model):
 	likes = models.ManyToManyField(Info_Usuario,null=True,blank=True)
 
 class Etiqueta(models.Model):
-	nombre = models.CharField(max_length=150)
+	nombre = models.CharField(max_length=150, unique=True)
 	def __unicode__(self):
 		return self.nombre
 
 class Foto(models.Model):
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
-	user = models.ForeignKey(User)
-	spot = models.ForeignKey(Spot)
+	user = models.ForeignKey(User, blank=True, null=True)
+	anonimo = models.BooleanField()
+	spot = models.ForeignKey(Spot, blank=True, null=True)
 	fecha = models.DateTimeField()
 	delay = models.DateTimeField(blank=True, null=True)
 	descripcion = models.CharField(max_length=250)
