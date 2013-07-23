@@ -149,7 +149,9 @@ def login(request):
 				'msg' : "Error"
 			}
 			_json['data'] = {
-				'errors':errors
+				'errors':errors,
+				'username':username,
+				'password':password
 			}
 	else:
 		_json['status'] = {
