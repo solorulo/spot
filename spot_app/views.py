@@ -118,8 +118,8 @@ def login(request):
 	_json = {}
 	if (request.method == "POST"):
 		errors = []
-		username = request.POST.get('username','')
-		password = request.POST.get('password','')
+		username = request.POST['username']
+		password = request.POST['password']
 		
 		# request.POST.get('anonimo','')
 		if not username:
