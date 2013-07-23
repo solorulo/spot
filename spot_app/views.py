@@ -65,7 +65,8 @@ def register(request):
 		password = request.POST.get('password','')
 		email = request.POST.get('email','')
 		foto_url = request.POST.get('foto_url','')
-		anonimo = False # request.POST.get('anonimo','')
+		
+		# request.POST.get('anonimo','')
 		if not username:
 			errors.append("Introduce un nombre de usuario")
 		if not name:
@@ -113,6 +114,50 @@ def register(request):
 		}
 		data = simplejson.dumps(_json)
 		return HttpResponse(data)
+def login(request):
+	_json = {}
+	if (request.method == "POST"):
+		errors = []
+		username = request.POST.get('username','')
+		password = request.POST.get('password','')
+		
+		# request.POST.get('anonimo','')
+		if not username:
+			errors.append("Introduce un nombre de usuario")
+		if not password:
+			errors.append("Introduce tu password")
+
+		if not errors:
+			user = authenticate(username=username, password=password)
+			if user is not None and user.is_active:
+				# Correct password, and the user is marked "active"
+				auth_login(request, user)
+				# Redirect to a success page.
+				_json['status'] = {
+					'code' : 200,
+					'msg' : "Logged in"
+				}
+			else:
+				# Show an error page
+				_json['status'] = {
+					'code' : 401,
+					'msg' : "Revisa tu contraseña"
+				}
+		else:
+			_json['status'] = {
+				'code' : 401,
+				'msg' : "Error"
+			}
+			_json['data'] = {
+				'errors':errors
+			}
+	else:
+		_json['status'] = {
+			'code' : 403,
+			'msg' : "Solo POST"
+		}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
 
 def logout(request):
 	_json = {}
@@ -123,4 +168,3 @@ def logout(request):
 	}
 	data = simplejson.dumps(_json)
 	return HttpResponse(data)
-

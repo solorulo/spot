@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'spot_app.views.home', name='home'),
     url(r'^register/$', 'spot_app.views.register', name='register'),
-    # url(r'^login/$', 'spot_app.views.login', name='login'),
+    url(r'^login/$', 'spot_app.views.login', name='login'),
     url(r'^logout/$', 'spot_app.views.logout', name='logout'),
     # url(r'^spot/', include('spot.foo.urls')),
 
