@@ -176,6 +176,21 @@ def login(request):
 	data = simplejson.dumps(_json)
 	return HttpResponse(data)
 
+def madre_prueba(request):
+	_json = {}
+	if request.user.is_authenticated():
+		_json['status'] = {
+			'code' : 200,
+			'msg' : ":)"
+		}
+	else:
+		_json['status'] = {
+			'code' : 403,
+			'msg' : "Huevototote :("
+		}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
+
 def logout(request):
 	_json = {}
 	auth_logout(request)

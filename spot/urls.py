@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     url(r'^register/$', 'spot_app.views.register', name='register'),
     url(r'^login/$', 'spot_app.views.login', name='login'),
     url(r'^logout/$', 'spot_app.views.logout', name='logout'),
+    
+    url(r'^prueba/$', 'spot_app.views.madre_prueba', name='prueba'),
     # url(r'^spot/', include('spot.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
