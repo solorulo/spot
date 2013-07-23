@@ -6,12 +6,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.utils import simplejson
 
-from django.contrib.auth.models import User
-from django.contrib.sessions.models import Session
 from django.contrib.auth import authenticate
-from django.views.defaults import page_not_found
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
+from django.views.defaults import page_not_found
+
+from django.views.decorators.csrf import csrf_exempt, wraps, available_attrs
 
 import cloudinary
 from cloudinary import uploader, utils, CloudinaryImage
@@ -32,6 +34,19 @@ def handler500(request):
 	}
 	data = simplejson.dumps(_json)
 	return HttpResponse(data)
+
+def csrf_exempt(view_func):
+	"""
+	Marks a view function as being exempt from the CSRF view protection.
+	"""
+	# We could just do view_func.csrf_exempt = True, but decorators
+	# are nicer if they don't have side-effects, so we return a new
+	# function.
+	def wrapped_view(request,*args, **kwargs):
+		return view_func(request, *args, **kwargs)
+		if request.META.has_key('SpotStreet-X-Key'):
+			wrapped_view.csrf_exempt = True
+	return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)
 
 def url(self, **options):
 	options.update(format = self.format, version = self.version)
@@ -114,19 +129,8 @@ def register(request):
 		}
 		data = simplejson.dumps(_json)
 		return HttpResponse(data)
+@csrf_exempt
 def login(request):
-	def csrf_exempt(view_func):
-		"""
-		Marks a view function as being exempt from the CSRF view protection.
-		"""
-		# We could just do view_func.csrf_exempt = True, but decorators
-		# are nicer if they don't have side-effects, so we return a new
-		# function.
-		def wrapped_view(request,*args, **kwargs):
-			return view_func(request, *args, **kwargs)
-			if request.META.has_key('SpotStreet-X-Key'):
-				wrapped_view.csrf_exempt = True
-		return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)
 	_json = {}
 	if (request.method == "POST"):
 		errors = []
