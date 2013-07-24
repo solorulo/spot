@@ -12,13 +12,6 @@ handler500 = "spot_app.views.handler500"
 urlpatterns = patterns('',
 	url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    # Examples:
-    url(r'^$', 'spot_app.views.home', name='home'),
-    url(r'^register/$', 'spot_app.views.register', name='register'),
-    url(r'^login/$', 'spot_app.views.login', name='login'),
-    url(r'^logout/$', 'spot_app.views.logout', name='logout'),
-    
-    url(r'^prueba/$', 'spot_app.views.madre_prueba', name='prueba'),
     # url(r'^spot/', include('spot.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
@@ -26,4 +19,13 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+)
+
+urlpatterns += patterns('spot_app.views',
+    url(r'^$', 'home', name='home'),
+    url(r'^register/$', 'register', name='register'),
+    url(r'^login/$', 'login', name='login'),
+    url(r'^logout/$', 'logout', name='logout'),
+    
+    url(r'^prueba/$', 'madre_prueba', name='prueba'),
 )
