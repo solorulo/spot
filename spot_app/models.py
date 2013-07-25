@@ -1,5 +1,6 @@
-from django.db import models
+# from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.gis.db import models
 import cloudinary
 from cloudinary.models import *
 
@@ -17,7 +18,9 @@ class Crew(models.Model):
 
 class Info_Usuario(models.Model):
 	user = models.OneToOneField(User)
+
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
+
 	anonimo = models.BooleanField(default=False)
 	crews = models.ManyToManyField(Crew,null=True,blank=True)
 	seguir = models.ManyToManyField("self",null=True,blank=True)
@@ -27,8 +30,12 @@ class Info_Usuario(models.Model):
 
 class Spot(models.Model):
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
-	latitud = models.DecimalField(decimal_places=7, max_digits=10)
-	altitud = models.DecimalField(decimal_places=7, max_digits=10)
+
+	# latitud = models.DecimalField(decimal_places=7, max_digits=10)
+	# longitud = models.DecimalField(decimal_places=7, max_digits=10)
+	point = PointField()
+	objects = models.GeoManager()
+
 	likes = models.ManyToManyField(Info_Usuario,null=True,blank=True)
 
 class Etiqueta(models.Model):
@@ -37,22 +44,28 @@ class Etiqueta(models.Model):
 		return self.nombre
 
 class Foto(models.Model):
+
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
-	user = models.ForeignKey(User, blank=True, null=True)
-	anonimo = models.BooleanField()
+	user = models.ForeignKey(Info_Usuario, blank=True, null=True)
+	likes = models.ManyToManyField(User,null=True,blank=True)
+
+	anonimo = models.BooleanField(default=False)
 	spot = models.ForeignKey(Spot, blank=True, null=True)
 	fecha = models.DateTimeField()
 	delay = models.DateTimeField(blank=True, null=True)
 	descripcion = models.CharField(max_length=250)
 	crews = models.ManyToManyField(Crew,null=True,blank=True)
 	urbex = models.BooleanField()
-	latitud = models.DecimalField(decimal_places=7, max_digits=10)
-	altitud = models.DecimalField(decimal_places=7, max_digits=10)
+
+	# latitud = models.DecimalField(decimal_places=7, max_digits=10)
+	# longitud = models.DecimalField(decimal_places=7, max_digits=10)
+	point = PointField()
+	objects = models.GeoManager()
+
 	colonia = models.CharField(max_length=100)
 	xAccel = models.DecimalField(decimal_places=7, max_digits=10)
 	yAccel = models.DecimalField(decimal_places=7, max_digits=10)
 	zAccel = models.DecimalField(decimal_places=7, max_digits=10)
-	likes = models.ManyToManyField(Info_Usuario,null=True,blank=True)
 	tags = models.ManyToManyField(Etiqueta,null=True,blank=True)
 	
 	def __unicode__(self):
@@ -74,6 +87,8 @@ class Ruta(models.Model):
 	nombre = models.CharField(max_length=30)
 	spots = models.ManyToManyField(Spot, through='Orden')
 	likes = models.ManyToManyField(Info_Usuario)
+
+	objects = models.GeoManager()
 
 	def __unicode__(self):
 		return self.nombre

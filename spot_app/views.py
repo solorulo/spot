@@ -120,7 +120,7 @@ def register(request):
 				}
 		else:
 			_json['status'] = {
-				'code' : 403,
+				'code' : 405,
 				'msg' : "Solo POST"
 			}
 	except:
@@ -172,7 +172,7 @@ def login(request):
 				}
 		else:
 			_json['status'] = {
-				'code' : 403,
+				'code' : 405,
 				'msg' : "Solo POST"
 			}
 	except:
