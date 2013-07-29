@@ -1,42 +1,38 @@
-# from django.db import models
+from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.gis.db import models
+# from django.contrib.gis.db import models
 import cloudinary
 from cloudinary.models import *
 
-# Create your models here. su mamada de no tocar de
 class Info_Usuario(models.Model):
-	pass
 
-class Crew(models.Model):
-	nombre = models.CharField(max_length=30)
+	user = models.OneToOneField(User, primary_key=True)
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
-	members = models.ManyToManyField(Info_Usuario,null=True,blank=True)
-	
-	def __unicode__(self):
-		return self.nombre
-
-class Info_Usuario(models.Model):
-	user = models.OneToOneField(User)
-
-	foto_url = CloudinaryField('foto_url',null=True,blank=True)
-
 	anonimo = models.BooleanField(default=False)
-	crews = models.ManyToManyField(Crew,null=True,blank=True)
+
 	seguir = models.ManyToManyField("self",null=True,blank=True)
 
 	def __unicode__(self):
 		return self.user.username
 
+class Crew(models.Model):
+	nombre = models.CharField(max_length=30)
+	foto_url = CloudinaryField('foto_url',null=True,blank=True)
+	owner = models.ForeignKey(Info_Usuario, related_name='owner')
+	members = models.ManyToManyField(Info_Usuario, related_name='members',null=True,blank=True)
+	
+	def __unicode__(self):
+		return self.nombre
+
 class Spot(models.Model):
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 
-	# latitud = models.DecimalField(decimal_places=7, max_digits=10)
-	# longitud = models.DecimalField(decimal_places=7, max_digits=10)
-	point = PointField()
-	objects = models.GeoManager()
+	latitud = models.DecimalField(decimal_places=7, max_digits=10)
+	longitud = models.DecimalField(decimal_places=7, max_digits=10)
+	# point = PointField()
+	# objects = models.GeoManager()
 
-	likes = models.ManyToManyField(Info_Usuario,null=True,blank=True)
+	# likes = models.ManyToManyField(Like,null=True,blank=True)
 
 class Etiqueta(models.Model):
 	nombre = models.CharField(max_length=150, unique=True)
@@ -47,20 +43,18 @@ class Foto(models.Model):
 
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
 	user = models.ForeignKey(Info_Usuario, blank=True, null=True)
-	likes = models.ManyToManyField(User,null=True,blank=True)
 
 	anonimo = models.BooleanField(default=False)
 	spot = models.ForeignKey(Spot, blank=True, null=True)
 	fecha = models.DateTimeField()
 	delay = models.DateTimeField(blank=True, null=True)
 	descripcion = models.CharField(max_length=250)
-	crews = models.ManyToManyField(Crew,null=True,blank=True)
 	urbex = models.BooleanField()
 
-	# latitud = models.DecimalField(decimal_places=7, max_digits=10)
-	# longitud = models.DecimalField(decimal_places=7, max_digits=10)
-	point = PointField()
-	objects = models.GeoManager()
+	latitud = models.DecimalField(decimal_places=7, max_digits=10)
+	longitud = models.DecimalField(decimal_places=7, max_digits=10)
+	# point = PointField()
+	# objects = models.GeoManager()
 
 	colonia = models.CharField(max_length=100)
 	xAccel = models.DecimalField(decimal_places=7, max_digits=10)
@@ -71,14 +65,22 @@ class Foto(models.Model):
 	def __unicode__(self):
 		return self.descripcion
 
-class Comparte (models.Model):
-	user = models.ForeignKey(User)
+class Like(models.Model):
+	user = models.ForeignKey(Info_Usuario)
 	foto = models.ForeignKey(Foto)
+	fecha = models.DateTimeField()
+
+class Comparte (models.Model):
+	user = models.ForeignKey(Info_Usuario)
+	foto = models.ForeignKey(Foto)
+	fecha = models.DateTimeField()
 
 class Comentario(models.Model):
 	texto = models.CharField(max_length=30)
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(Info_Usuario)
 	foto = models.ForeignKey(Foto)
+	fecha = models.DateTimeField()
+	
 	
 	def __unicode__(self):
 		return self.nombre
@@ -86,9 +88,9 @@ class Comentario(models.Model):
 class Ruta(models.Model):
 	nombre = models.CharField(max_length=30)
 	spots = models.ManyToManyField(Spot, through='Orden')
-	likes = models.ManyToManyField(Info_Usuario)
+	# likes = models.ManyToManyField(Like,null=True,blank=True)
 
-	objects = models.GeoManager()
+	# objects = models.GeoManager()
 
 	def __unicode__(self):
 		return self.nombre

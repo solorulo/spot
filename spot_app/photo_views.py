@@ -15,34 +15,63 @@ from django.views.defaults import page_not_found
 
 import math
 
-from django.contrib.gis.geos import *
-from django.contrib.gis.measure import D
+# from django.contrib.gis.geos import *
+# from django.contrib.gis.measure import D
 
 # from django.views.decorators.csrf import csrf_exempt, wraps, available_attrs
 
 import cloudinary
 from cloudinary import uploader, utils, CloudinaryImage
 
-def handler404(request):
-	_json = {}
-	_json['status'] = {
-		'code' : 404,
-		'msg' : "Not Found"
-	}
-	data = simplejson.dumps(_json)
-	return HttpResponse(data)
-def handler500(request):
-	_json = {}
-	_json['status'] = {
-		'code' : 500,
-		'msg' : "Internal Error"
-	}
-	data = simplejson.dumps(_json)
-	return HttpResponse(data)
-
 def url(self, **options):
 	options.update(format = self.format, version = self.version)
 	return utils.cloudinary_url(self.public_id, **options)[0]
+
+def home_global(request):
+	_json = {}
+	try:
+		if request.user.is_authenticated():
+			if request.method = "GET" :
+				places = []
+
+				limit = request.GET['cantidad']
+				offset = request.GET['inicio']
+
+				# ref_point = Point(latitud, altitud)
+				# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
+
+				all_fotos = Foto.objects.all().order_by('foto_id')
+
+				for foto in all_fotos:
+					places.append({
+						"url":foto.foto_url,
+						"id_foto":foto.foto_id
+						})
+
+				_json['status'] = {
+					'code' : 200,
+					'msg' : "Bien"
+				}
+				_json['data'] = {
+					'fotos' : places
+				}
+			else:
+				_json['status'] = {
+					'code' : 405,
+					'msg' : "Solo POST"
+				}
+		else:
+			_json['status'] = {
+				'code' : 401,
+				'msg' : "Sesion no iniciada"
+			}
+	except:
+		_json['status'] = {
+			'code' : 500,
+			'msg' : "Internal Error"
+		}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
 
 def home_nearby(request):
 	_json = {}
@@ -56,17 +85,69 @@ def home_nearby(request):
 				limit = request.GET['cantidad']
 				offset = request.GET['inicio']
 
-				ref_point = Point(latitud, altitud)
-				all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
+				# ref_point = Point(latitud, altitud)
+				# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
 
-				
+				all_fotos = Foto.objects.all()
 
-				all_fotos = Foto.objects.filter()
-
+				for foto in all_fotos:
+					# falta ordenar
+					# dist = 
+					places.append({
+						# "distance":dist,
+						"url":foto.foto_url,
+						"id_foto":foto.foto_id
+						})
 
 				_json['status'] = {
-					'code' : 500,
-					'msg' : "Internal Error"
+					'code' : 200,
+					'msg' : "Bien"
+				}
+				_json['data'] = {
+					'fotos' : places
+				}
+			else:
+				_json['status'] = {
+					'code' : 405,
+					'msg' : "Sesion no iniciada"
+				}
+		else:
+			_json['status'] = {
+				'code' : 401,
+				'msg' : "Sesion no iniciada"
+			}
+	except:
+		_json['status'] = {
+			'code' : 500,
+			'msg' : "Internal Error"
+		}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
+
+def home_top(request):
+	_json = {}
+	try:
+		if request.user.is_authenticated():
+			if request.method = "GET" :
+				places = []
+
+				limit = request.GET['cantidad']
+				offset = request.GET['inicio']
+
+				# ref_point = Point(latitud, altitud)
+				# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
+
+				all_fotos = Foto.objects.all().order_by('n_likes')
+
+				for foto in all_fotos:
+					places.append({
+						"url":foto.foto_url,
+						"id_foto":foto.foto_id
+						})
+
+				_json['status'] = {
+					'code' : 200,
+					'msg' : "Bien"
 				}
 				_json['data'] = {
 					'fotos' : places

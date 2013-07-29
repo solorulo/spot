@@ -22,10 +22,10 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('spot_app.views',
-    url(r'^$', 'home', name='home'),
+    url(r'^$', 'profile', name='profile'),
     url(r'^register/$', 'register', name='register'),
     url(r'^login/$', 'login', name='login'),
     url(r'^logout/$', 'logout', name='logout'),
     
-    url(r'^prueba/$', 'madre_prueba', name='prueba'),
+    # url(r'^prueba/$', 'madre_prueba', name='prueba'),
 )

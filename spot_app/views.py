@@ -53,35 +53,64 @@ def url(self, **options):
 # 	return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)
 
 
-def home(request):
-	# user = User.objects.create_user( "rulo1", "email", "rulo" ) # Guardamos el usuario
-	# user.is_staff = True
-	# user.is_superuser = True
-	# user.save()
-	# user = User.objects.get(username='solorulo')
-	# usp = Info_Usuario.objects.get(user=user)
-	# foto = url(usp.foto_url)
-	# _json = {}
-	# _json['status'] = {
-	# 	'code' : 500,
-	# 	'msg' : foto
-	# }
-	# usp.foto_url = "ewvm2y4pgvqdmc3do77v.jpg"
-	# usp.save()
-	# data = simplejson.dumps(_json)
-	# return HttpResponse(data)
-	return render_to_response('home/home.html')
+def profile(request):
+	_json = {}
+	# try:
+	if request.user.is_authenticated():
+		if request.method == "GET" :
+			data = {}
+			_jsonfotos = []
+			user_id = request.GET['user_id']
+			info_us = Info_Usuario.objects.get(user_id=int(user_id))
+			user = User.objects.get(pk=user_id)
+			data['username'] = user.username
+			likes = Like.objects.filter(user_id=user_id)
+			data['likes']=likes.count()
+
+			fotos = Foto.objects.filter(user_id=user_id)
+
+			for foto in fotos:
+				_jsonfotos.append({
+					"url":foto.foto_url,
+					"id_foto":foto.foto_id
+					})
+
+			_json['status'] = {
+				'code' : 200,
+				'msg' : "Bien"
+			}
+			_json['data'] = {
+				'info' : data,
+				'fotos': _jsonfotos
+			}
+		else:
+			_json['status'] = {
+				'code' : 405,
+				'msg' : "Solo POST"
+			}
+	else:
+		_json['status'] = {
+			'code' : 401,
+			'msg' : "Sesion no iniciada"
+		}
+	# except:
+	# 	_json['status'] = {
+	# 		'code' : 500,
+	# 		'msg' : "Internal Error"
+	# 	}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
 
 def register(request):
 	_json = {}
 	try:
 		if (request.method == "POST"):
 			errors = []
-			username = request.POST.get('username','')
-			name = request.POST.get('name','')
-			password = request.POST.get('password','')
-			email = request.POST.get('email','')
-			foto_url = request.POST.get('foto_url','')
+			username = request.POST['username']
+			name = request.POST['name']
+			password = request.POST['password']
+			email = request.POST['email']
+			foto_url = request.POST['foto_url']
 			
 			# request.POST.get('anonimo','')
 			if not username:
@@ -182,21 +211,6 @@ def login(request):
 		}
 	data = simplejson.dumps(_json)
 	return HttpResponse(data)
-
-# def madre_prueba(request):
-# 	_json = {}
-# 	if request.user.is_authenticated():
-# 		_json['status'] = {
-# 			'code' : 200,
-# 			'msg' : ":)"
-# 		}
-# 	else:
-# 		_json['status'] = {
-# 			'code' : 403,
-# 			'msg' : "Huevototote :("
-# 		}
-# 	data = simplejson.dumps(_json)
-# 	return HttpResponse(data)
 
 def logout(request):
 	_json = {}
