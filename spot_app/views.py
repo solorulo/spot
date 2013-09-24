@@ -13,8 +13,6 @@ from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from django.views.defaults import page_not_found
 
-# from django.views.decorators.csrf import csrf_exempt, wraps, available_attrs
-
 import cloudinary
 from cloudinary import uploader, utils, CloudinaryImage
 
@@ -39,65 +37,61 @@ def url(self, **options):
 	options.update(format = self.format, version = self.version)
 	return utils.cloudinary_url(self.public_id, **options)[0]
 
-# def csrf_exempt(view_func):
-# 	"""
-# 	Marks a view function as being exempt from the CSRF view protection.
-# 	"""
-# 	# We could just do view_func.csrf_exempt = True, but decorators
-# 	# are nicer if they don't have side-effects, so we return a new
-# 	# function.
-# 	def wrapped_view(request,*args, **kwargs):
-# 		return view_func(request, *args, **kwargs)
-# 		if request.META.has_key('SpotStreet-X-Key'):
-# 			wrapped_view.csrf_exempt = True
-# 	return wraps(view_func, assigned=available_attrs(view_func))(wrapped_view)
-
-
 def profile(request):
 	_json = {}
-	# try:
-	if request.user.is_authenticated():
-		if request.method == "GET" :
-			data = {}
-			_jsonfotos = []
-			user_id = request.GET['user_id']
-			info_us = Info_Usuario.objects.get(user_id=int(user_id))
-			user = User.objects.get(pk=user_id)
-			data['username'] = user.username
-			likes = Like.objects.filter(user_id=user_id)
-			data['likes']=likes.count()
+	try:
+		if request.user.is_authenticated():
+			if request.method == "GET" :
+				data = {}
+				user_id = request.GET['user_id']
+				info_us = Info_Usuario.objects.get(user_id=int(user_id))
+				user = User.objects.get(pk=int(user_id))
+				data['username'] = user.username
+				likes = Like.objects.filter(user_id=int(user_id))
+				data['likes']=likes.count()
 
-			fotos = Foto.objects.filter(user_id=user_id)
+				fotos = Foto.objects.filter(user_id=int(user_id))
+				crews = Crew.objects.filter(owner=int(user_id))
 
-			for foto in fotos:
-				_jsonfotos.append({
-					"url":foto.foto_url,
-					"id_foto":foto.foto_id
-					})
+				_jsoncrews = []
+				for crew in crews:
+					_jsoncrews.append({
+						"nombre":crew.nombre,
+						"id":crew.crew_id,
+						"foto_url":url(crew.foto_url)
+						})
 
-			_json['status'] = {
-				'code' : 200,
-				'msg' : "Bien"
-			}
-			_json['data'] = {
-				'info' : data,
-				'fotos': _jsonfotos
-			}
+				_jsonfotos = []
+				for foto in fotos:
+					_jsonfotos.append({
+						"url":url(foto.foto_url),
+						"id_foto":foto.foto_id
+						})
+
+				_json['status'] = {
+					'code' : 200,
+					'msg' : "Bien"
+				}
+				_json['data'] = {
+					'info' : data,
+					'fotos': _jsonfotos,
+					"crews": _jsoncrews
+				}
+			else:
+				_json['status'] = {
+					'code' : 405,
+					'msg' : "Solo POST"
+				}
 		else:
 			_json['status'] = {
-				'code' : 405,
-				'msg' : "Solo POST"
+				'code' : 401,
+				'msg' : "Sesion no iniciada"
 			}
-	else:
+	except:
 		_json['status'] = {
-			'code' : 401,
-			'msg' : "Sesion no iniciada"
+			'code' : 500,
+			'msg' : "Internal Error"
 		}
-	# except:
-	# 	_json['status'] = {
-	# 		'code' : 500,
-	# 		'msg' : "Internal Error"
-	# 	}
 	data = simplejson.dumps(_json)
 	return HttpResponse(data)
 
@@ -159,6 +153,7 @@ def register(request):
 		}
 	data = simplejson.dumps(_json)
 	return HttpResponse(data)
+
 def login(request):
 	_json = {}
 	try:
