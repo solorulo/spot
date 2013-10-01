@@ -101,7 +101,6 @@ def register(request):
 		if (request.method == "POST"):
 			errors = []
 			username = request.POST['username']
-			name = request.POST['name']
 			password = request.POST['password']
 			email = request.POST['email']
 			foto_url = request.POST['foto_url']
@@ -109,8 +108,6 @@ def register(request):
 			# request.POST.get('anonimo','')
 			if not username:
 				errors.append("Introduce un nombre de usuario")
-			if not name:
-				errors.append("Introduce tu nombre")
 			if not password:
 				errors.append("Introduce tu password")
 			if not email and '@' not in email:

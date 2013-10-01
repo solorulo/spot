@@ -34,8 +34,8 @@ def home_global(request):
 			if request.method = "GET" :
 				places = []
 
-				limit = request.GET['cantidad']
-				offset = request.GET['inicio']
+				limit = request.GET['limit']
+				offset = request.GET['offset']
 
 				# ref_point = Point(latitud, altitud)
 				# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
@@ -80,8 +80,8 @@ def home_nearby(request):
 			if request.method = "GET" :
 				places = []
 
-				latitud = request.GET['latitud']
-				longitud = request.GET['longitud']
+				latitud = request.GET['lat']
+				longitud = request.GET['lon']
 				limit = request.GET['cantidad']
 				offset = request.GET['inicio']
 
