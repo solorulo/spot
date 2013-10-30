@@ -37,6 +37,36 @@ def url(self, **options):
 	options.update(format = self.format, version = self.version)
 	return utils.cloudinary_url(self.public_id, **options)[0]
 
+def verify_user(request):
+	_json = {}
+	try:
+		if request.method == "GET" :
+			data = {}
+			username = request.GET['username']
+			try:
+				User.objects.get( username=username )
+				_json['status'] = {
+					'code' : 401,
+					'msg' : "El usuario ya existe"
+				}
+			except User.DoesNotExist:
+				_json['status'] = {
+					'code' : 200,
+					'msg' : "El usuario no existe"
+				}
+		else:
+			_json['status'] = {
+				'code' : 405,
+				'msg' : "Solo POST"
+			}
+	except:
+		_json['status'] = {
+			'code' : 500,
+			'msg' : "Internal Error"
+		}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
+
 def profile(request):
 	_json = {}
 	try:
@@ -173,7 +203,7 @@ def login(request):
 					# Redirect to a success page.
 					_json['status'] = {
 						'code' : 200,
-						'msg' : "Logged in"
+						'msg' : "Logged in "+user.username
 					}
 				else:
 					# Show an error page
