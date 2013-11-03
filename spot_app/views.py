@@ -37,6 +37,43 @@ def url(self, **options):
 	options.update(format = self.format, version = self.version)
 	return utils.cloudinary_url(self.public_id, **options)[0]
 
+
+def verify_session(request):
+	_json = {}
+	if request.method != "GET" :
+		_json['status'] = {
+			'code' : 405,
+			'msg' : "Solo GET"
+		}
+		data = simplejson.dumps(_json)
+		return HttpResponse(data)
+
+	try:
+		data = {}
+		username = request.GET['username']
+		if not request.user.is_authenticated():
+			_json['status'] = {
+				'code' : 406,
+				'msg' : "User not aunthenticated"
+			}
+		elif request.user.username != username:
+			_json['status'] = {
+				'code' : 409,
+				'msg' : "The user aunthenticated is another than requested"
+			}
+		else: 
+			_json['status'] = {
+				'code' : 200,
+				'msg' : "OK"
+			}
+	except:
+		_json['status'] = {
+			'code' : 500,
+			'msg' : "Internal Error"
+		}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
+
 def verify_user(request):
 	_json = {}
 	try:
@@ -75,7 +112,7 @@ def verify_user(request):
 		else:
 			_json['status'] = {
 				'code' : 405,
-				'msg' : "Solo POST"
+				'msg' : "Solo GET"
 			}
 	except:
 		_json['status'] = {
@@ -146,50 +183,71 @@ def profile(request):
 def register(request):
 	_json = {}
 	try:
-		if (request.method == "POST"):
-			errors = []
-			username = request.POST['username']
-			password = request.POST['password']
-			email = request.POST['email']
-			foto_url = request.POST['foto_url']
-			
-			# request.POST.get('anonimo','')
-			if not username:
-				errors.append("Introduce un nombre de usuario")
-			if not password:
-				errors.append("Introduce tu password")
-			if not email and '@' not in email:
-				errors.append("Introduce un email valido")
-
-			if not errors:
-				try:
-					User.objects.get( username=username )
-					_json['status'] = {
-						'code' : 401,
-						'msg' : "El usuario ya existe"
-					}
-				except User.DoesNotExist:
-					# TODO registrar
-					user = User.objects.create_user(username=username, email=email, password=password)
-					user.save()
-					info_user = Info_Usuario(user=user, foto_url=foto_url, anonimo=False )
-					info_user.save()
-					_json['status'] = {
-						'code' : 201,
-						'msg' : "Registro Creado"
-					}
-			else:
-				_json['status'] = {
-					'code' : 401,
-					'msg' : "Error"
-				}
-				_json['data'] = {
-					'errors':errors
-				}
-		else:
+		if (request.method != "POST"):
 			_json['status'] = {
 				'code' : 405,
 				'msg' : "Solo POST"
+			}
+			data = simplejson.dumps(_json)
+			return HttpResponse(data)
+
+		errors = []	
+		username = request.POST['username']
+		password = request.POST['password']
+		email = request.POST['email']
+		# foto_url = request.POST['foto_url']
+		
+		# request.POST.get('anonimo','')
+		if not username:
+			errors.append("Introduce un nombre de usuario")
+		if not password:
+			errors.append("Introduce tu password")
+		if not email and '@' not in email:
+			errors.append("Introduce un email valido")
+
+		if not errors:
+			#verificar
+			mMessage = ""
+			mAvailable = False
+			data = {}
+
+			try:
+				User.objects.get( username=username )
+				data["nav_username"] = True
+				mMessage = "El usuario ya existe. "
+				mAvailable = False
+			except User.DoesNotExist:
+				mAvailable = True
+			try:
+				User.objects.get( email=email )
+				mMessage = mMessage + "Ya esta registrado ese email"
+				data["nav_email"] = True
+				mAvailable = False
+			except User.DoesNotExist:
+				mAvailable = mAvailable and True
+
+			if mAvailable :
+				user = User.objects.create_user(username=username, email=email, password=password)
+				user.save()
+				info_user = Info_Usuario(user=user, anonimo=False )
+				info_user.save()
+				_json['status'] = {
+					'code' : 201,
+					'msg' : "Registro Creado"
+				}
+			else:
+				_json['status'] = {
+					'code' : 401,
+					'msg' : mMessage
+				}
+				_json["data"] = data
+		else:
+			_json['status'] = {
+				'code' : 401,
+				'msg' : "Error"
+			}
+			_json['data'] = {
+				'errors':errors
 			}
 	except:
 		_json['status'] = {
