@@ -50,12 +50,14 @@ def verify_user(request):
 				User.objects.get( username=username )
 				data["nav_username"] = True
 				mMessage = "El usuario ya existe. "
+				mAvailable = False
 			except User.DoesNotExist:
 				mAvailable = True
 			try:
 				User.objects.get( email=email )
 				mMessage = mMessage + "Ya esta registrado ese email"
 				data["nav_email"] = True
+				mAvailable = False
 			except User.DoesNotExist:
 				mAvailable = mAvailable and True
 
