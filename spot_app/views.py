@@ -43,17 +43,33 @@ def verify_user(request):
 		if request.method == "GET" :
 			data = {}
 			username = request.GET['username']
+			email = request.GET['email']
+			mMessage = ""
+			mAvailable = False
 			try:
 				User.objects.get( username=username )
-				_json['status'] = {
-					'code' : 401,
-					'msg' : "El usuario ya existe"
-				}
+				data["nav_username"] = True
+				mMessage = "El usuario ya existe. "
 			except User.DoesNotExist:
+				mAvailable = True
+			try:
+				User.objects.get( email=email )
+				mMessage = mMessage + "Ya esta registrado ese email"
+				data["nav_email"] = True
+			except User.DoesNotExist:
+				mAvailable = mAvailable and True
+
+			if mAvailable :
 				_json['status'] = {
 					'code' : 200,
 					'msg' : "El usuario no existe"
 				}
+			else:
+				_json['status'] = {
+					'code' : 401,
+					'msg' : mMessage
+				}
+				_json["data"] = data
 		else:
 			_json['status'] = {
 				'code' : 405,
