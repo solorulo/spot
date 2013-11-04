@@ -180,6 +180,48 @@ def profile(request):
 	data = simplejson.dumps(_json)
 	return HttpResponse(data)
 
+def register_image(request):
+	_json = {}
+	try:
+		if not request.user.is_authenticated():
+			_json['status'] = {
+				'code' : 401,
+				'msg' : "Sesion no iniciada"
+			}
+
+		if request.method != "GET" :
+			_json['status'] = {
+				'code' : 405,
+				'msg' : "Solo GET"
+			}
+
+		image_url = request.GET['id_image']
+
+		if not image_url:
+			_json['status'] = {
+				'code' : 400,
+				'msg' : "Dato inválido"
+			}
+			data = simplejson.dumps(_json)
+			return HttpResponse(data)
+
+		user_id = request.user.pk
+		info_us = Info_Usuario.objects.get(user_id=int(user_id))
+		info_us.foto_url = image_url
+
+		_json['status'] = {
+			'code' : 200,
+			'msg' : "Bien"
+		}
+		
+	except:
+		_json['status'] = {
+			'code' : 500,
+			'msg' : "Internal Error"
+		}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
+
 def register(request):
 	_json = {}
 	try:
