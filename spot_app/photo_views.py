@@ -31,38 +31,41 @@ def home_global(request):
 	_json = {}
 	try:
 		if request.user.is_authenticated():
-			if request.method = "GET" :
-				places = []
-
-				limit = request.GET['limit']
-				offset = request.GET['offset']
-
-				# ref_point = Point(latitud, altitud)
-				# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
-
-				all_fotos = Foto.objects.all().order_by('foto_id')
-
-				for foto in all_fotos:
-					places.append({
-						"url":foto.foto_url,
-						"id_foto":foto.foto_id
-						})
-
+			if request.method != "GET" :
 				_json['status'] = {
-					'code' : 200,
-					'msg' : "Bien"
+					'code' : 401,
+					'msg' : "Solo GET"
 				}
-				_json['data'] = {
-					'fotos' : places
-				}
-			else:
-				_json['status'] = {
-					'code' : 405,
-					'msg' : "Solo POST"
-				}
+				data = simplejson.dumps(_json)
+				return HttpResponse(data)
+
+
+			places = []
+
+			limit = request.GET['limit']
+			offset = request.GET['offset']
+
+			# ref_point = Point(latitud, altitud)
+			# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
+
+			all_fotos = Foto.objects.all().order_by('pk')
+
+			for foto in all_fotos:
+				places.append({
+					"url":foto.foto_url,
+					"id_foto":foto.pk
+					})
+
+			_json['status'] = {
+				'code' : 200,
+				'msg' : "Bien"
+			}
+			_json['data'] = {
+				'fotos' : places
+			}
 		else:
 			_json['status'] = {
-				'code' : 401,
+				'code' : 405,
 				'msg' : "Sesion no iniciada"
 			}
 	except:
@@ -77,40 +80,42 @@ def home_nearby(request):
 	_json = {}
 	try:
 		if request.user.is_authenticated():
-			if request.method = "GET" :
-				places = []
-
-				latitud = request.GET['lat']
-				longitud = request.GET['lon']
-				limit = request.GET['cantidad']
-				offset = request.GET['inicio']
-
-				# ref_point = Point(latitud, altitud)
-				# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
-
-				all_fotos = Foto.objects.all()
-
-				for foto in all_fotos:
-					# falta ordenar
-					# dist = 
-					places.append({
-						# "distance":dist,
-						"url":foto.foto_url,
-						"id_foto":foto.foto_id
-						})
-
-				_json['status'] = {
-					'code' : 200,
-					'msg' : "Bien"
-				}
-				_json['data'] = {
-					'fotos' : places
-				}
-			else:
+			if request.method != "POST" :
 				_json['status'] = {
 					'code' : 405,
-					'msg' : "Sesion no iniciada"
+					'msg' : "Solo POST"
 				}
+				data = simplejson.dumps(_json)
+				return HttpResponse(data)
+
+			places = []
+
+			latitud = request.POST['lat']
+			longitud = request.POST['lon']
+			limit = request.POST['cantidad']
+			offset = request.POST['inicio']
+
+			# ref_point = Point(latitud, altitud)
+			# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
+
+			all_fotos = Foto.objects.all()
+
+			for foto in all_fotos:
+				# falta ordenar
+				# dist = 
+				places.append({
+					# "distance":dist,
+					"url":foto.foto_url,
+					"id_foto":foto.foto_id
+					})
+
+			_json['status'] = {
+				'code' : 200,
+				'msg' : "Bien"
+			}
+			_json['data'] = {
+				'fotos' : places
+			}
 		else:
 			_json['status'] = {
 				'code' : 401,
@@ -128,7 +133,7 @@ def home_top(request):
 	_json = {}
 	try:
 		if request.user.is_authenticated():
-			if request.method = "GET" :
+			if request.method == "GET" :
 				places = []
 
 				limit = request.GET['cantidad']

@@ -214,7 +214,7 @@ def register_image(request):
 		info_us.foto_url = image_url
 
 		_json['status'] = {
-			'code' : 200,
+			'code' : 201,
 			'msg' : "Bien"
 		}
 	except:
