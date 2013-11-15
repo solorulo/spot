@@ -42,8 +42,14 @@ def home_global(request):
 
 			places = []
 
-			limit = request.GET['limit']
-			offset = request.GET['offset']
+			if ('limit' in request.GET):
+				limit = request.GET['limit']
+			else:
+				limit = 20
+			if ('offset' in request.GET):
+				offset = request.GET['offset']
+			else:
+				offset = 0
 
 			# ref_point = Point(latitud, altitud)
 			# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
