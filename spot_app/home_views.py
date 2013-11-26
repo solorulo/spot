@@ -57,8 +57,9 @@ def home_global(request):
 			all_fotos = Foto.objects.all().order_by('pk')[offset:limit]
 
 			for foto in all_fotos:
+
 				places.append({
-					"url":foto.foto_url,
+					"url":foto.foto_url.public_id,
 					"id_foto":foto.pk
 					})
 
