@@ -18,8 +18,8 @@ class Info_Usuario(models.Model):
 class Crew(models.Model):
 	nombre = models.CharField(max_length=30)
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
-	owner = models.ForeignKey(Info_Usuario, related_name='owner')
-	members = models.ManyToManyField(Info_Usuario, related_name='members',null=True,blank=True)
+	owner = models.ForeignKey(User, related_name='owner')
+	members = models.ManyToManyField(User, related_name='members',null=True,blank=True)
 	
 	def __unicode__(self):
 		return self.nombre
@@ -42,7 +42,7 @@ class Etiqueta(models.Model):
 class Foto(models.Model):
 
 	foto_url = CloudinaryField('foto_url',null=True,blank=True)
-	user = models.ForeignKey(Info_Usuario, blank=True, null=True)
+	user = models.ForeignKey(User, blank=True, null=True)
 
 	anonimo = models.BooleanField(default=False)
 	spot = models.ForeignKey(Spot, blank=True, null=True)
@@ -66,18 +66,18 @@ class Foto(models.Model):
 		return self.descripcion
 
 class Like(models.Model):
-	user = models.ForeignKey(Info_Usuario)
+	user = models.ForeignKey(User)
 	foto = models.ForeignKey(Foto)
 	fecha = models.DateTimeField()
 
 class Comparte (models.Model):
-	user = models.ForeignKey(Info_Usuario)
+	user = models.ForeignKey(User)
 	foto = models.ForeignKey(Foto)
 	fecha = models.DateTimeField()
 
 class Comentario(models.Model):
 	texto = models.CharField(max_length=30)
-	user = models.ForeignKey(Info_Usuario)
+	user = models.ForeignKey(User)
 	foto = models.ForeignKey(Foto)
 	fecha = models.DateTimeField()
 	
