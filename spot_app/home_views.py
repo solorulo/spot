@@ -59,7 +59,7 @@ def home_global(request):
 			for foto in all_fotos:
 
 				places.append({
-					"url":foto.foto_url.public_id,
+					"url":url(foto.foto_url),
 					"id_foto":foto.pk
 					})
 
