@@ -59,7 +59,7 @@ def photo_add(request):
 
 	new_foto = Foto(
 		foto_url=foto_id, 
-		user=request.user, 
+		user=request.user.pk, 
 		fecha=current_datetime,
 		delay=delayVal,
 		descripcion=desc,
