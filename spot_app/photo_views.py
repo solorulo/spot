@@ -55,7 +55,7 @@ def photo_add(request):
 	urbex = request.POST['urbex']
 
 	current_datetime = datetime.datetime.now()
-	delayVal = current_datetime + datetime.timedelta(minutes = delay)
+	delayVal = current_datetime + datetime.timedelta(minutes = int(delay))
 
 	new_foto = Foto(
 		foto_url=foto_id, 
