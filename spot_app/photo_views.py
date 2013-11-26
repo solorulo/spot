@@ -2,7 +2,7 @@
 # Create your views here.
 import os
 from spot_app.models import *
-from datetime import datetime
+import datetime 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.utils import simplejson
@@ -54,7 +54,7 @@ def photo_add(request):
 	delay = request.POST['delay']
 	urbex = request.POST['urbex']
 
-	current_datetime = datetime.now()
+	current_datetime = datetime.datetime.now()
 	delayVal = current_datetime + datetime.timedelta(minutes = delay)
 
 	new_foto = Foto(
