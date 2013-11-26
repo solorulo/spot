@@ -32,10 +32,14 @@ urlpatterns += patterns('spot_app.views',
     # url(r'^prueba/$', 'madre_prueba', name='prueba'),
 )
 
-urlpatterns += patterns('spot_app.photo_views',
+urlpatterns += patterns('spot_app.home_views',
     url(r'^home/global$', 'home_global', name='home_global'),
     url(r'^home/top$', 'home_top', name='home_top'),
     url(r'^home/nearby$', 'home_nearby', name='home_nearby'),
+)
+
+urlpatterns += patterns('spot_app.photo_views',
+    url(r'^photo/add$', 'photo_add', name='photo_add'),
     
     # url(r'^prueba/$', 'madre_prueba', name='prueba'),
 )

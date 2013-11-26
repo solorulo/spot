@@ -56,7 +56,7 @@ class Foto(models.Model):
 	# point = PointField()
 	# objects = models.GeoManager()
 
-	colonia = models.CharField(max_length=100)
+	colonia = models.CharField(max_length=100,null=True,blank=True)
 	xAccel = models.DecimalField(decimal_places=7, max_digits=10)
 	yAccel = models.DecimalField(decimal_places=7, max_digits=10)
 	zAccel = models.DecimalField(decimal_places=7, max_digits=10)
