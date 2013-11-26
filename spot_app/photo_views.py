@@ -68,7 +68,8 @@ def photo_add(request):
 		longitud=lng,
 		xAccel=0,
 		yAccel=0,
-		zAccel=0)
+		zAccel=0,
+		colonia="")
 	new_foto.save()
 	_json['status'] = {
 		'code' : 200,
