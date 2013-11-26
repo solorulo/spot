@@ -31,7 +31,7 @@ def url(self, **options):
 def photo_add(request):
 	_json = {}
 	try:
-		if request.user.is_authenticated():
+		if not request.user.is_authenticated():
 			_json['status'] = {
 				'code' : 401,
 				'msg' : "Sesion no iniciada"
