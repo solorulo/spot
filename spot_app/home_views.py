@@ -24,7 +24,7 @@ import cloudinary
 from cloudinary import uploader, utils, CloudinaryImage
 
 def url(self, **options):
-	options.update(format = self.format, version = self.version)
+	options.update(format = self.format, version = self.version, height=100)
 	return utils.cloudinary_url(self.public_id, **options)[0]
 
 def home_global(request):
