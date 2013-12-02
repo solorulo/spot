@@ -54,7 +54,7 @@ def home_global(request):
 			# ref_point = Point(latitud, altitud)
 			# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
 
-			all_fotos = Foto.objects.all().order_by('pk')[offset:limit]
+			all_fotos = Foto.objects.all().order_by('-pk')[offset:limit]
 
 			for foto in all_fotos:
 
