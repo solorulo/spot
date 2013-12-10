@@ -39,7 +39,7 @@ def photo_add(request):
 		data = simplejson.dumps(_json)
 		return HttpResponse(data)
 
-	if request.method == "GET" :
+	if request.method != "POST" :
 		_json['status'] = {
 			'code' : 405,
 			'msg' : "Solo POST"
@@ -74,6 +74,43 @@ def photo_add(request):
 	_json['status'] = {
 		'code' : 200,
 		'msg' : "Bien"
+	}
+
+	# except:
+	# 	_json['status'] = {
+	# 		'code' : 500,
+	# 		'msg' : "Internal Error"
+	# 	}
+	data = simplejson.dumps(_json)
+	return HttpResponse(data)
+
+def photo_view(request):
+	_json = {}
+	# try:
+	if not request.user.is_authenticated():
+		_json['status'] = {
+			'code' : 401,
+			'msg' : "Sesion no iniciada"
+		}
+		data = simplejson.dumps(_json)
+		return HttpResponse(data)
+
+	if request.method != "GET" :
+		_json['status'] = {
+			'code' : 405,
+			'msg' : "Solo GET"
+		}
+		data = simplejson.dumps(_json)
+		return HttpResponse(data)
+
+	foto_id = request.POST['id_image']
+
+	_json['status'] = {
+		'code' : 200,
+		'msg' : "Bien"
+	}
+	_json['data'] = {
+		'url'
 	}
 
 	# except:
