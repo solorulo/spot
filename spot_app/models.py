@@ -50,6 +50,7 @@ class Foto(models.Model):
 	delay = models.DateTimeField(blank=True, null=True)
 	descripcion = models.CharField(max_length=250)
 	urbex = models.BooleanField()
+	n_likes = models.IntegerField(default=0)
 
 	latitud = models.DecimalField(decimal_places=7, max_digits=10)
 	longitud = models.DecimalField(decimal_places=7, max_digits=10)
