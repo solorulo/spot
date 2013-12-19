@@ -84,7 +84,7 @@ def photo_add(request):
 	data = simplejson.dumps(_json)
 	return HttpResponse(data)
 
-def photo_view(request):
+def photo(request):
 	_json = {}
 	# try:
 	if not request.user.is_authenticated():
@@ -103,15 +103,32 @@ def photo_view(request):
 		data = simplejson.dumps(_json)
 		return HttpResponse(data)
 
-	foto_id = request.POST['id_image']
+	foto_id = request.GET['id_image']
+
+	foto = Foto.objects.get(pk=foto_id)
+	foto_user = foto.user
+
+	anonimo = foto.anonimo
 
 	_json['status'] = {
 		'code' : 200,
 		'msg' : "Bien"
 	}
-	_json['data'] = {
-		'url'
-	}
+
+	if anonimo :
+		_json['data'] = {
+			'url':url(foto.foto_url, height=600),
+			'description':foto.descripcion,
+			'n_likes':foto.n_likes
+		}
+	else:
+		_json['data'] = {
+			'url':url(foto.foto_url, height=600),
+			'user_id':foto_user.pk,
+			'user_name':foto_user.username,
+			'description':foto.descripcion,
+			'n_likes':foto.n_likes
+		}
 
 	# except:
 	# 	_json['status'] = {
