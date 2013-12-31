@@ -117,18 +117,24 @@ def photo(request):
 
 	if anonimo :
 		_json['data'] = {
-			'url':url(foto.foto_url, height=600),
+			'pic_url':url(foto.foto_url, height=600),
+			'pic_public_id':foto.foto_url.public_id,
 			'description':foto.descripcion,
 			'n_likes':foto.n_likes
 		}
 	else:
+		info_user = Info_Usuario.objects.get(user__pk=foto_user.pk)
 		_json['data'] = {
-			'url':url(foto.foto_url, height=600),
-			'user_id':foto_user.pk,
-			'user_name':foto_user.username,
+			'pic_url':url(foto.foto_url, height=600),
+			'pic_public_id':foto.foto_url.public_id,
 			'description':foto.descripcion,
-			'n_likes':foto.n_likes
+			'n_likes':foto.n_likes,
+			'user_id':foto_user.pk,
+			'user_name':foto_user.username
 		}
+		if info_user.foto_url:
+			_json['data']['user_pic_url'] = url(info_user.foto_url, height=300)
+			_json['data']['user_pic_public_id'] = info_user.foto_url.public_id
 
 	# except:
 	# 	_json['status'] = {

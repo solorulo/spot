@@ -16,11 +16,11 @@ DATABASES = {
     'default': {
         # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'damkgt7paflj9j',                      # Or path to database file if using sqlite3.
+        'NAME': 'd848mpdhpo26qp',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'mgkcdwwyfhzikk',
-        'PASSWORD': 'pNNNz6-59xKoRjyd0hN06Zd4vY',
-        'HOST': 'ec2-54-204-45-126.compute-1.amazonaws.com',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'USER': 'fzwvkqtvgwiuzh',
+        'PASSWORD': 'bhbS61s89x4Aad5aI8pnPwgNrE',
+        'HOST': 'ec2-54-197-241-64.compute-1.amazonaws.com',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '5432',                      # Set to empty string for default.
     }
 }
