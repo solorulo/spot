@@ -110,28 +110,46 @@ def photo(request):
 
 	anonimo = foto.anonimo
 
+	likes = Like.objects.filter(foto_id=foto.pk).order_by('-pk')[:4]
+	# count_likes = likes.count()
+	last_likes = []
+	for lk in likes:
+		last_likes.append({
+			'name':lk.user.username
+			})
+
+	comments_db = Comentario.objects.all().order_by('-pk')[:10]
+	comments = []
+	for comment in comments_db:
+		info_user = Info_Usuario.objects.get(user__pk=comment.user.pk)
+		cmnt = {
+			'username':comment.user.username,
+			'text':comment.texto
+		}
+		if info_user.foto_url:
+			cmnt['user_pic_url'] = url(info_user.foto_url, height=300)
+			cmnt['user_pic_public_id'] = info_user.foto_url.public_id
+		comments.append(cmnt)
+
+
 	_json['status'] = {
 		'code' : 200,
 		'msg' : "Bien"
 	}
+	_json['data'] = {
+		'pic_url':url(foto.foto_url, height=600),
+		'pic_public_id':foto.foto_url.public_id,
+		'description':foto.descripcion,
+		'n_likes':foto.n_likes,
+		'last_likes':last_likes,
+		'comments':comments
+	}
 
-	if anonimo :
-		_json['data'] = {
-			'pic_url':url(foto.foto_url, height=600),
-			'pic_public_id':foto.foto_url.public_id,
-			'description':foto.descripcion,
-			'n_likes':foto.n_likes
-		}
-	else:
+	if not anonimo :
 		info_user = Info_Usuario.objects.get(user__pk=foto_user.pk)
-		_json['data'] = {
-			'pic_url':url(foto.foto_url, height=600),
-			'pic_public_id':foto.foto_url.public_id,
-			'description':foto.descripcion,
-			'n_likes':foto.n_likes,
-			'user_id':foto_user.pk,
-			'user_name':foto_user.username
-		}
+		_json['data']['user_id'] = foto_user.pk
+		_json['data']['user_name'] = foto_user.username
+
 		if info_user.foto_url:
 			_json['data']['user_pic_url'] = url(info_user.foto_url, height=300)
 			_json['data']['user_pic_public_id'] = info_user.foto_url.public_id

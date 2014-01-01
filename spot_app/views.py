@@ -150,7 +150,7 @@ def profile(request):
 				for foto in fotos:
 					_jsonfotos.append({
 						"url":url(foto.foto_url),
-						"id_foto":foto.foto_id
+						"id_foto":foto.pk
 						})
 
 				_json['status'] = {
@@ -171,7 +171,7 @@ def profile(request):
 			_json['status'] = {
 				'code' : 401,
 				'msg' : "Sesion no iniciada"
-			}
+				}
 	except:
 		_json['status'] = {
 			'code' : 500,
