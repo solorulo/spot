@@ -37,6 +37,49 @@ def url(self, **options):
 	options.update(format = self.format, version = self.version)
 	return utils.cloudinary_url(self.public_id, **options)[0]
 
+def __init__(request):
+	user_data = []
+	try:
+		
+		if request.user.is_authenticated():
+
+			# Agregamos mas campos al diccionario de informacion
+			user_data['username'] = request.session['username']
+			user_data['picture'] = request.session['picture']
+			user_data['anonymous'] = request.session['anonymous']
+
+			user_data['error'] = False # Agregamos la propiedad menu=True para mostrar el menu del usuario
+
+		else:
+
+			user_data['error'] = True
+	
+	except:
+
+		session_key = request.session.session_key  # Sacamos el id de las variables de session
+
+		session = Session.objects.get(session_key=session_key)
+		uid = session.get_decoded().get('_auth_user_id')
+		usu = User.objects.get(pk=uid) # Nos traemos el id yy el apodo del usuario
+		
+		informacion_usuario = Info_User.objects.get(user=usu.id) # Nos traemos toda la informacion personal del usuario
+						
+		# Almacenamos toda la informacion del usuario en variables de sesion para despues utilizarlas
+		request.session['username'] = usu.username
+		request.session['user_picture'] = url(informacion_usuario.picture)
+		request.session['id'] = usu.id
+		request.session['anonymous'] = informacion_usuario.anonymous
+
+		# Agregamos mas campos al diccionario de informacion
+		user_data['id'] = request.session['id']
+		user_data['username'] = request.session['username']
+		user_data['picture'] = request.session['picture']
+		user_data['anonymous'] = request.session['anonymous']
+
+		user_data['error'] = False # Agregamos la propiedad menu=True para mostrar el menu del usuario
+	return user_data
+
+
 
 def verify_session(request):
 	_json = {}

@@ -72,7 +72,7 @@ def photo_add(request):
 		colonia="")
 	new_foto.save()
 	_json['status'] = {
-		'code' : 200,
+		'code' : 201,
 		'msg' : "Bien"
 	}
 

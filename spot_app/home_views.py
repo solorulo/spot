@@ -88,48 +88,47 @@ def home_global(request):
 def home_nearby(request):
 	_json = {}
 	try:
-		if request.user.is_authenticated():
-			if request.method != "POST" :
-				_json['status'] = {
-					'code' : 405,
-					'msg' : "Solo POST"
-				}
-				data = simplejson.dumps(_json)
-				return HttpResponse(data)
-
-			places = []
-
-			latitud = request.POST['lat']
-			longitud = request.POST['lon']
-			limit = request.POST['cantidad']
-			offset = request.POST['inicio']
-
-			# ref_point = Point(latitud, altitud)
-			# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
-
-			all_fotos = Foto.objects.all()
-
-			for foto in all_fotos:
-				# falta ordenar
-				# dist = 
-				places.append({
-					# "distance":dist,
-					"url":foto.foto_url,
-					"id_foto":foto.foto_id
-					})
-
+		if not request.user.is_authenticated():
 			_json['status'] = {
-				'code' : 200,
-				'msg' : "Bien"
-			}
-			_json['data'] = {
-				'fotos' : places
-			}
-		else:
-			_json['status'] = {
-				'code' : 401,
+				'code' : 405,
 				'msg' : "Sesion no iniciada"
 			}
+			data = simplejson.dumps(_json)
+			return HttpResponse(data)
+
+		if request.method != "POST" :
+			_json['status'] = {
+				'code' : 401,
+				'msg' : "Solo POST"
+			}
+			data = simplejson.dumps(_json)
+			return HttpResponse(data)
+
+		latitud = request.POST['lat']
+		longitud = request.POST['lon']
+		limit = request.POST['cantidad']
+		offset = request.POST['inicio']
+
+		# ref_point = Point(latitud, altitud)
+		# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
+
+		all_fotos = Foto.objects.all()[offset:limit]
+
+		for foto in all_fotos:
+
+			places.append({
+				"url":url(foto.foto_url, height=300),
+				"public_id":foto.foto_url.public_id,
+				"id_foto":foto.pk
+				})
+
+		_json['status'] = {
+			'code' : 200,
+			'msg' : "Bien"
+		}
+		_json['data'] = {
+			'fotos' : places
+		}
 	except:
 		_json['status'] = {
 			'code' : 500,
