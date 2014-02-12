@@ -106,6 +106,8 @@ def home_nearby(request):
 
 		latitud = request.POST['lat']
 		longitud = request.POST['lng']
+
+		places = []
 		if ('limit' in request.POST):
 			limit = request.POST['limit']
 		else:
