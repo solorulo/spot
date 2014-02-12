@@ -105,9 +105,15 @@ def home_nearby(request):
 			return HttpResponse(data)
 
 		latitud = request.POST['lat']
-		longitud = request.POST['lon']
-		limit = request.POST['cantidad']
-		offset = request.POST['inicio']
+		longitud = request.POST['lng']
+		if ('limit' in request.POST):
+			limit = request.POST['limit']
+		else:
+			limit = 20
+		if ('offset' in request.POST):
+			offset = request.POST['offset']
+		else:
+			offset = 0
 
 		# ref_point = Point(latitud, altitud)
 		# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
