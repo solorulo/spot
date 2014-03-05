@@ -172,27 +172,27 @@ def profile(request):
 			if request.method == "GET" :
 				data = {}
 				user_id = request.GET['user_id']
-				info_us = Info_Usuario.objects.get(user_id=int(user_id))
+				info_us = Info_User.objects.get(user_id=int(user_id))
 				user = User.objects.get(pk=int(user_id))
 				data['username'] = user.username
 				likes = Like.objects.filter(user_id=int(user_id))
 				data['likes']=likes.count()
 
-				fotos = Foto.objects.filter(user_id=int(user_id))
+				fotos = Photo.objects.filter(user_id=int(user_id))
 				crews = Crew.objects.filter(owner=int(user_id))
 
 				_jsoncrews = []
 				for crew in crews:
 					_jsoncrews.append({
-						"nombre":crew.nombre,
+						"nombre":crew.name,
 						"id":crew.crew_id,
-						"foto_url":url(crew.foto_url)
+						"foto_url":url(crew.picture)
 						})
 
 				_jsonfotos = []
 				for foto in fotos:
 					_jsonfotos.append({
-						"url":url(foto.foto_url),
+						"url":url(foto.picture),
 						"id_foto":foto.pk
 						})
 
@@ -253,8 +253,9 @@ def register_image(request):
 			return HttpResponse(data)
 
 		user_id = request.user.pk
-		info_us = Info_Usuario.objects.get(user_id=int(user_id))
-		info_us.foto_url = image_url
+		info_us = Info_User.objects.get(user_id=int(user_id))
+		info_us.picture = image_url
+		info_us.save()
 
 		_json['status'] = {
 			'code' : 201,

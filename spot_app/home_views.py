@@ -60,7 +60,7 @@ def home_global(request):
 	# ref_point = Point(latitud, altitud)
 	# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
 
-	all_fotos = Foto.objects.all().order_by('-pk')[offset:limit]
+	all_fotos = Photo.objects.all().order_by('-pk')[offset:limit]
 
 	for foto in all_fotos:
 
@@ -120,7 +120,7 @@ def home_nearby(request):
 		# ref_point = Point(latitud, altitud)
 		# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
 
-		all_fotos = Foto.objects.all()[offset:limit]
+		all_fotos = Photo.objects.all()[offset:limit]
 
 		for foto in all_fotos:
 
@@ -178,7 +178,7 @@ def home_top(request):
 		# ref_point = Point(latitud, altitud)
 		# all_fotos = Foto.objects.all()[offset:limit].distance(ref_point).order_by('distance')
 
-		all_fotos = Foto.objects.all().order_by('-n_likes')[offset:limit]
+		all_fotos = Photo.objects.all().order_by('-n_likes')[offset:limit]
 
 		for foto in all_fotos:
 
