@@ -120,7 +120,7 @@ def photo(request):
 	comments_db = Comment.objects.all().order_by('-pk')[:10]
 	comments = []
 	for comment in comments_db:
-		info_user = InfoUser.objects.get(user__pk=comment.user.pk)
+		info_user = Info_User.objects.get(user__pk=comment.user.pk)
 		cmnt = {
 			'username':comment.user.username,
 			'text':comment.text
@@ -145,7 +145,7 @@ def photo(request):
 	}
 
 	if not anonimo :
-		info_user = InfoUser.objects.get(user__pk=foto_user.pk)
+		info_user = Info_User.objects.get(user__pk=foto_user.pk)
 		_json['data']['user_id'] = foto_user.pk
 		_json['data']['user_name'] = foto_user.username
 

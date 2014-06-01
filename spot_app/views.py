@@ -62,7 +62,7 @@ def __init__(request):
 		uid = session.get_decoded().get('_auth_user_id')
 		usu = User.objects.get(pk=uid) # Nos traemos el id yy el apodo del usuario
 		
-		informacion_usuario = InfoUser.objects.get(user=usu.id) # Nos traemos toda la informacion personal del usuario
+		informacion_usuario = Info_User.objects.get(user=usu.id) # Nos traemos toda la informacion personal del usuario
 						
 		# Almacenamos toda la informacion del usuario en variables de sesion para despues utilizarlas
 		request.session['username'] = usu.username
@@ -172,7 +172,7 @@ def profile(request):
 			if request.method == "GET" :
 				data = {}
 				user_id = request.GET['user_id']
-				info_us = InfoUser.objects.get(user_id=int(user_id))
+				info_us = Info_User.objects.get(user_id=int(user_id))
 				user = User.objects.get(pk=int(user_id))
 				data['username'] = user.username
 				likes = Like.objects.filter(user_id=int(user_id))
@@ -253,7 +253,7 @@ def register_image(request):
 			return HttpResponse(data)
 
 		user_id = request.user.pk
-		info_us = InfoUser.objects.get(user_id=int(user_id))
+		info_us = Info_User.objects.get(user_id=int(user_id))
 		info_us.picture = image_url
 		info_us.save()
 
@@ -319,7 +319,7 @@ def register(request):
 			if mAvailable :
 				user = User.objects.create_user(username=username, email=email, password=password)
 				user.save()
-				info_user = InfoUser(user=user, anonimo=False )
+				info_user = Info_Usuario(user=user, anonimo=False )
 				info_user.save()
 				user = authenticate(username=username, password=password)
 				auth_login(request, user)
