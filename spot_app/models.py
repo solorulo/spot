@@ -5,14 +5,15 @@ from django.contrib.auth.models import User
 import cloudinary
 from cloudinary.models import *
 
-class Info_User(models.Model):
-
-	user = models.OneToOneField(User, primary_key=True)
+class InfoUser(User):
 	picture = CloudinaryField('picture',null=True,blank=True)
 	anonymous = models.BooleanField(default=False)
 
 	def __unicode__(self):
 		return self.user.username
+
+	class Meta:
+		db_table = 'info_user'
 
 class Spot(models.Model):
 	name = models.CharField(max_length=280)
